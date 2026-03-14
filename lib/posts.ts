@@ -57,6 +57,7 @@ export async function getPostData(slug: string) {
   const contentHtml = processedContent.toString()
 
   return {
+    id: slug,
     slug,
     contentHtml,
     title: matterResult.data.title || '无标题',

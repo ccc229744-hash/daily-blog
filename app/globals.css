@@ -3,9 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  /* 中国风配色方案 */
+  --china-red: #E60012;
+  --china-red-light: #FF4D4F;
+  --tech-blue: #1890FF;
+  --tech-blue-dark: #096DD9;
+  
+  --text-primary: #1F1F1F;
+  --text-secondary: #595959;
+  --text-tertiary: #8C8C8C;
+  --border: #D9D9D9;
+  --background: #FAFAFA;
+  
+  --foreground-rgb: 31, 31, 31;
   --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 248, 250, 252;
+  --background-end-rgb: 250, 250, 250;
 }
 
 body {
@@ -17,6 +29,37 @@ body {
     )
     rgb(var(--background-start-rgb));
   min-height: 100vh;
+  /* 中文字体优化 - 优先使用系统字体 */
+  font-family: 
+    'PingFang SC',           /* 苹果中文 */
+    'Hiragino Sans GB',      /* 冬青黑体 */
+    'Microsoft YaHei',       /* 微软雅黑 */
+    'Source Han Sans SC',    /* 思源黑体 */
+    'Noto Sans SC',          /* 思源黑体备用 */
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 防止 iOS 自动缩放 */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  body {
+    /* 禁用长按选择，提升 App 感 */
+    -webkit-touch-callout: none;
+    /* 点击高亮 */
+    -webkit-tap-highlight-color: rgba(24, 144, 255, 0.1);
+  }
+}
+
+/* 移动端安全区域适配（iPhone 刘海屏） */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* Markdown 样式 */
