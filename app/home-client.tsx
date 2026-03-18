@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import SEO from './components/SEO';
 import SearchModal from './components/SearchModal';
 import PerformanceMonitor from './components/PerformanceMonitor';
-import { xhsArticles } from '../data/articles';
 import WorksGrid from './components/WorksGrid';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,6 +14,19 @@ const ProfileModal = lazy(() => import('./components/modal/ProfileModal'));
 const CreateContentModal = lazy(() => import('./components/modal/CreateContentModal'));
 const FriendsModal = lazy(() => import('./components/modal/FriendsModal'));
 const ChatModal = lazy(() => import('./components/modal/ChatModal'));
+
+// 文章接口
+interface Article {
+  id: string;
+  title: string;
+  image: string;
+  author: string;
+  avatar: string;
+  likes: number;
+  collects: number;
+  tags: string[];
+  category: string;
+}
 
 interface Friend {
   id: number;
@@ -35,6 +47,185 @@ export default function HomePage() {
   const [showChat, setShowChat] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedChatFriend, setSelectedChatFriend] = useState<Friend | null>(null);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 获取真实文章数据
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        // 从API获取文章数据
+        const response = await fetch('/api/posts');
+        if (response.ok) {
+          const apiResponse = await response.json();
+          if (apiResponse.success && apiResponse.data) {
+            // 映射API返回的数据到Article接口格式
+            const mappedArticles = apiResponse.data.map((post: any) => ({
+              id: post.id,
+              title: post.title,
+              image: post.coverImage || `https://picsum.photos/seed/${post.id}/400/500`,
+              author: post.authorName,
+              avatar: post.authorAvatar,
+              likes: post.likes,
+              collects: Math.floor(post.likes * 0.4), // 假设收藏数是点赞数的40%
+              tags: post.tags,
+              category: post.type || '技术',
+            }));
+            setArticles(mappedArticles);
+          } else {
+            // 如果API返回错误，使用模拟数据
+            setArticles([
+              {
+                id: '1',
+                title: 'Next.js 14 实战指南｜前端开发必备',
+                image: 'https://picsum.photos/seed/nextjs/400/500',
+                author: '前端小贝',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+                likes: 1234,
+                collects: 567,
+                tags: ['前端开发', 'Next.js', 'React'],
+                category: '技术',
+              },
+              {
+                id: '2',
+                title: 'AI 内容创作全流程分享✨',
+                image: 'https://picsum.photos/seed/ai/400/500',
+                author: 'AI 探索者',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+                likes: 2890,
+                collects: 1203,
+                tags: ['AI 工具', '内容创作', '效率'],
+                category: 'AI',
+              },
+              {
+                id: '3',
+                title: '从零搭建个人博客📝超详细教程',
+                image: 'https://picsum.photos/seed/blog/400/500',
+                author: '博主日记',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+                likes: 856,
+                collects: 432,
+                tags: ['博客搭建', '教程', '技术分享'],
+                category: '生活',
+              },
+              {
+                id: '4',
+                title: '我的 AI 变现之路💰月入过万',
+                image: 'https://picsum.photos/seed/money/400/500',
+                author: '变现达人',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
+                likes: 5670,
+                collects: 3421,
+                tags: ['AI 变现', '副业', '赚钱'],
+                category: '搞钱',
+              },
+              {
+                id: '5',
+                title: '打工人必备 AI 工具清单🧰',
+                image: 'https://picsum.photos/seed/tools/400/500',
+                author: '效率控',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
+                likes: 3456,
+                collects: 2100,
+                tags: ['AI 工具', '效率', '打工人'],
+                category: '工具',
+              },
+              {
+                id: '6',
+                title: '30 天学会 AI 绘画🎨我的学习路径',
+                image: 'https://picsum.photos/seed/art/400/500',
+                author: '艺术 AI',
+                avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6',
+                likes: 1890,
+                collects: 967,
+                tags: ['AI 绘画', '学习', '艺术'],
+                category: '艺术',
+              },
+            ]);
+          }
+        } else {
+          // 如果API失败，使用模拟数据
+          setArticles([
+            {
+              id: '1',
+              title: 'Next.js 14 实战指南｜前端开发必备',
+              image: 'https://picsum.photos/seed/nextjs/400/500',
+              author: '前端小贝',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+              likes: 1234,
+              collects: 567,
+              tags: ['前端开发', 'Next.js', 'React'],
+              category: '技术',
+            },
+            {
+              id: '2',
+              title: 'AI 内容创作全流程分享✨',
+              image: 'https://picsum.photos/seed/ai/400/500',
+              author: 'AI 探索者',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+              likes: 2890,
+              collects: 1203,
+              tags: ['AI 工具', '内容创作', '效率'],
+              category: 'AI',
+            },
+            {
+              id: '3',
+              title: '从零搭建个人博客📝超详细教程',
+              image: 'https://picsum.photos/seed/blog/400/500',
+              author: '博主日记',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+              likes: 856,
+              collects: 432,
+              tags: ['博客搭建', '教程', '技术分享'],
+              category: '生活',
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error('获取文章数据失败:', error);
+        // 使用模拟数据作为 fallback
+        setArticles([
+          {
+            id: '1',
+            title: 'Next.js 14 实战指南｜前端开发必备',
+            image: 'https://picsum.photos/seed/nextjs/400/500',
+            author: '前端小贝',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+            likes: 1234,
+            collects: 567,
+            tags: ['前端开发', 'Next.js', 'React'],
+            category: '技术',
+          },
+          {
+            id: '2',
+            title: 'AI 内容创作全流程分享✨',
+            image: 'https://picsum.photos/seed/ai/400/500',
+            author: 'AI 探索者',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+            likes: 2890,
+            collects: 1203,
+            tags: ['AI 工具', '内容创作', '效率'],
+            category: 'AI',
+          },
+          {
+            id: '3',
+            title: '从零搭建个人博客📝超详细教程',
+            image: 'https://picsum.photos/seed/blog/400/500',
+            author: '博主日记',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+            likes: 856,
+            collects: 432,
+            tags: ['博客搭建', '教程', '技术分享'],
+            category: '生活',
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   // 监听滚动
   useEffect(() => {
@@ -140,76 +331,124 @@ export default function HomePage() {
       <main className="min-h-screen bg-black pb-20 pt-20">
         {/* 瀑布流布局 */}
         <div className="px-2">
-          <div className="grid grid-cols-2 gap-2 max-w-4xl mx-auto">
-            {xhsArticles.map((article, index) => (
-              <Link
-                key={article.id}
-                href={`/posts/${article.id}`}
-                className="group block"
+          {loading ? (
+            <div className="max-w-4xl mx-auto py-10">
+              <div className="grid grid-cols-2 gap-2">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="bg-gray-900 rounded-xl overflow-hidden shadow-lg animate-pulse">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-gray-800">
+                      <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
+                        <span className="px-2 py-0.5 bg-gray-700 text-xs font-medium rounded-full text-gray-400 w-16 h-4" />
+                        <span className="px-2 py-0.5 bg-gray-700 text-xs font-medium rounded-full text-gray-400 w-16 h-4" />
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <div className="h-4 bg-gray-800 rounded mb-2" />
+                      <div className="h-4 bg-gray-800 rounded mb-2 w-3/4" />
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-5 h-5 rounded-full bg-gray-800" />
+                          <div className="h-3 bg-gray-800 rounded w-16" />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3.5 h-3.5 bg-gray-800 rounded" />
+                          <div className="h-3 bg-gray-800 rounded w-8" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : articles.length === 0 ? (
+            <div className="max-w-4xl mx-auto py-20 text-center">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
+                <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-medium text-white mb-2">暂无文章</h3>
+              <p className="text-gray-400 mb-6">稍后再来看看吧</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-white/10 text-white rounded-full hover:bg-white/20 transition"
               >
-                <article className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="relative aspect-[3/4] overflow-hidden">
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      width={300}
-                      height={400}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      priority={index < 3}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                刷新
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 max-w-4xl mx-auto">
+              {articles.map((article, index) => (
+                <Link
+                  key={article.id}
+                  href={`/posts/${article.id}`}
+                  className="group block"
+                >
+                  <article className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="relative aspect-[3/4] overflow-hidden">
+                      <Image
+                        src={article.image}
+                        alt={article.title}
+                        width={300}
+                        height={400}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        priority={index < 3}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    {index % 3 === 0 && (
-                      <div className="absolute top-2 right-2 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center">
-                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    )}
+                      {index % 3 === 0 && (
+                        <div className="absolute top-2 right-2 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      )}
 
-                    <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
-                      {article.tags.slice(0, 2).map((tag, i) => (
-                        <span
-                          key={i}
-                          className="px-2 py-0.5 bg-white/90 backdrop-blur-sm text-xs font-medium rounded-full text-gray-700"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="p-3">
-                    <h3 className="text-sm font-medium text-white mb-2 line-clamp-2 leading-snug group-hover:text-red-400 transition-colors">
-                      {article.title}
-                    </h3>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Image
-                          src={article.avatar}
-                          alt={article.author}
-                          width={20}
-                          height={20}
-                          className="w-5 h-5 rounded-full bg-gray-800"
-                        />
-                        <span className="text-xs text-gray-400 truncate max-w-[80px]">
-                          {article.author}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                        <span className="text-xs">{formatNumber(article.likes)}</span>
+                      <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
+                        {article.tags.slice(0, 2).map((tag, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-0.5 bg-white/90 backdrop-blur-sm text-xs font-medium rounded-full text-gray-700"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+
+                    <div className="p-3">
+                      <h3 className="text-sm font-medium text-white mb-2 line-clamp-2 leading-snug group-hover:text-red-400 transition-colors">
+                        {article.title}
+                      </h3>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Image
+                            src={article.avatar}
+                            alt={article.author}
+                            width={20}
+                            height={20}
+                            className="w-5 h-5 rounded-full bg-gray-800"
+                            dangerouslyAllowSVG
+                          />
+                          <span className="text-xs text-gray-400 truncate max-w-[80px]">
+                            {article.author}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-1 text-gray-400">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                          </svg>
+                          <span className="text-xs">{formatNumber(article.likes)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="text-center mt-8">
