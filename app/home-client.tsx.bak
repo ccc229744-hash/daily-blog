@@ -1,0 +1,60 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+
+// 使用本地占位图，避免外部服务超时
+const placeholderImages = [
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="800"%3E%3Crect fill="%23667eea" width="400" height="800"/%3E%3Ctext fill="%23fff" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24"%3E生活%3C/text%3E%3C/svg%3E',
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="800"%3E%3Crect fill="%23764ba2" width="400" height="800"/%3E%3Ctext fill="%23fff" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24"%3E技术%3C/text%3E%3C/svg%3E',
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="800"%3E%3Crect fill="%23f093fb" width="400" height="800"/%3E%3Ctext fill="%23fff" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24"%3EAI%3C/text%3E%3C/svg%3E',
+];
+
+const posts = [
+  { slug: '2026-03-12-hello-world', title: '你好，世界！', excerpt: '这是我的第一篇博客文章', category: '生活', image: placeholderImages[0], author: '贝贝', avatar: placeholderImages[0] },
+  { slug: '2026-03-11-nextjs-tips', title: 'Next.js 技巧', excerpt: '分享 Next.js 实用技巧', category: '技术', image: placeholderImages[1], author: '贝贝', avatar: placeholderImages[0] },
+  { slug: '2026-03-10-ai-trends', title: 'AI 大洗牌', excerpt: 'AI 时代已经到来', category: 'AI', image: placeholderImages[2], author: '贝贝', avatar: placeholderImages[0] },
+];
+
+export default function HomePage() {
+  const [showSearch, setShowSearch] = useState(false);
+
+  return (
+    <div className="fixed inset-0 bg-black">
+      <header className="absolute top-0 left-0 right-0 z-50 p-4 flex justify-between">
+        <span className="text-white font-bold">每日博客</span>
+        <button onClick={() => setShowSearch(!showSearch)} className="text-white">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+      </header>
+
+      <div className="w-full h-full overflow-y-scroll snap-y snap-mandatory" style={{ scrollbarWidth: 'none' }}>
+        {posts.map((post, index) => (
+          <Link key={post.slug} href={`/posts/${post.slug}`} className="w-full h-full block snap-start relative">
+            <div className="absolute inset-0">
+              <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80" />
+            </div>
+            <div className="relative z-10 h-full flex flex-col justify-end p-6">
+              <h2 className="text-white text-2xl font-bold mb-2">{post.title}</h2>
+              <p className="text-white/80 mb-4">{post.excerpt}</p>
+              <div className="flex items-center gap-4">
+                <img src={post.avatar} alt={post.author} className="w-10 h-10 rounded-full" />
+                <span className="text-white">{post.author}</span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <nav className="absolute bottom-0 left-0 right-0 bg-black/90 border-t border-white/10">
+        <div className="flex justify-around py-3">
+          <Link href="/" className="text-white text-xs">首页</Link>
+          <Link href="/categories" className="text-white/60 text-xs">分类</Link>
+          <Link href="/archive" className="text-white/60 text-xs">归档</Link>
+          <Link href="/about" className="text-white/60 text-xs">关于</Link>
+        </div>
+      </nav>
+    </div>
+  );
+}

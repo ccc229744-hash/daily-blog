@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { AuthProvider } from './components/auth/AuthContext'
+import AuthWrapper from './components/auth/AuthWrapper'
 import BackToTop from './components/BackToTop'
 import MobileNav from './components/MobileNav'
 import CustomerService from './components/CustomerService'
@@ -13,14 +15,17 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: '我的每日博客',
-  description: '记录每一天的思考与成长',
-  keywords: '博客，个人成长，思考，学习，技术',
-  authors: [{ name: '博主' }],
+  title: '智创科技有限公司 - 用科技创造价值，用创新引领未来',
+  description: '专业的技术解决方案提供商，专注于人工智能、云计算、大数据等前沿技术的商业应用。提供企业级软件开发、技术咨询、系统集成等服务。',
+  keywords: '人工智能，云计算，大数据，企业解决方案，技术咨询，软件开发，系统集成，数字化转型',
+  authors: [{ name: '智创科技' }],
+  publisher: '智创科技有限公司',
   other: {
     'google-site-verification': 'googled5246ebe40dfd2a1.html',
   },
 }
+
+
 
 export default function RootLayout({
   children,
@@ -83,7 +88,11 @@ export default function RootLayout({
         {/* 顶部公告栏 */}
         <AnnouncementBar />
         
-        {children}
+        <AuthProvider>
+          <AuthWrapper>
+            {children}
+          </AuthWrapper>
+        </AuthProvider>
         
         {/* 返回顶部按钮 */}
         <BackToTop />

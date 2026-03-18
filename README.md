@@ -11,6 +11,8 @@
 - ✅ 响应式设计（手机/电脑都能看）
 - ✅ SEO 友好
 - ✅ 快速加载
+- ✅ 好友社交功能
+- ✅ 性能优化
 
 ## 技术栈
 
@@ -92,13 +94,6 @@ vercel --prod
 3. 点击 "New Project"
 4. 导入你的 GitHub 仓库
 5. 点击 "Deploy"
-
-### 方法三：Vercel Dashboard
-
-1. 访问 [vercel.com/new](https://vercel.com/new)
-2. 导入项目（支持 Git 仓库或本地文件夹）
-3. 配置构建设置（通常自动检测）
-4. 点击 "Deploy"
 
 ## 项目结构
 

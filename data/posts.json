@@ -1,0 +1,60 @@
+[
+  {
+    "id": "1773820528671",
+    "type": "article",
+    "title": "123",
+    "content": "123",
+    "videoUrl": "",
+    "coverImage": "",
+    "tags": [],
+    "authorId": "1",
+    "authorName": "用户 123",
+    "authorAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=user123",
+    "createdAt": "2026-03-18T07:55:28.671Z",
+    "likes": 0,
+    "comments": 0,
+    "shares": 0,
+    "views": 0,
+    "isPublished": true
+  },
+  {
+    "id": "1",
+    "type": "article",
+    "title": "欢迎使用每日博客",
+    "content": "这是第一篇示例文章，展示如何使用我们的平台分享你的想法和创作。每日博客致力于为用户提供最好的创作体验。",
+    "tags": [
+      "欢迎",
+      "介绍",
+      "博客"
+    ],
+    "authorId": "system",
+    "authorName": "每日博客",
+    "authorAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=dailyblog",
+    "createdAt": "2026-03-18T00:00:00.000Z",
+    "likes": 100,
+    "comments": 20,
+    "shares": 15,
+    "views": 1234,
+    "isPublished": true
+  },
+  {
+    "id": "2",
+    "type": "video",
+    "title": "快速入门教程",
+    "content": "5 分钟教你如何使用每日博客发布第一篇作品",
+    "tags": [
+      "教程",
+      "视频",
+      "入门"
+    ],
+    "authorId": "system",
+    "authorName": "每日博客",
+    "authorAvatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=dailyblog",
+    "createdAt": "2026-03-18T08:00:00.000Z",
+    "likes": 256,
+    "comments": 45,
+    "shares": 32,
+    "views": 5678,
+    "isPublished": true
+  }
+]
